@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0b4d31" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="حکم" />
+    <link rel="icon" href="data:," />
+    <title>حکم — بازی کارتی</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#e9e4d8;
+        --bg-soft:#f4f0e6;
+        --panel:#fbf9f3;
+        --ink:#221d14;
+        --ink-soft:#5c5546;
+        --line:#d8d0bd;
+        --gold:#b8860b;
+        --gold-bright:#d9a441;
+        --gold-soft:#f3e3bb;
+        --felt-1:#1c8460;
+        --felt-2:#0b4d31;
+        --felt-edge:#083a25;
+        --wood:#7a4a26;
+        --wood-dark:#5b3418;
+        --red:#bc2330;
+        --card-bg:#fffdf4;
+        --card-edge:#e7dfc9;
+        --shadow:0 10px 30px rgba(30,25,10,.18);
+        --btn-dark:#22352b;
+        color-scheme:light;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#101711;
+          --bg-soft:#182119;
+          --panel:#1d261e;
+          --ink:#f0ead8;
+          --ink-soft:#b7b09c;
+          --line:#39443a;
+          --gold:#d9a441;
+          --gold-bright:#eec26a;
+          --gold-soft:#3d3220;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+          --btn-dark:#e9dfc4;
+          color-scheme:dark;
+        }
+      }
+      *{box-sizing:border-box}
+      html,body{margin:0;padding:0}
+      body{
+        font-family:"Vazirmatn",Tahoma,system-ui,sans-serif;
+        background:
+          radial-gradient(1200px 500px at 50% -10%, rgba(217,164,65,.14), transparent 60%),
+          var(--bg);
+        color:var(--ink);
+        min-height:100dvh;
+        -webkit-tap-highlight-color:transparent;
+      }
+      button{font-family:inherit;min-height:44px;cursor:pointer}
+      .wrap{max-width:920px;margin:0 auto;padding:10px 12px 26px}
+
+      /* ---------- top bar ---------- */
+      .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 2px 10px}
+      .title{font-size:30px;font-weight:900;line-height:1;margin:0;letter-spacing:-.5px}
+      .title small{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-top:5px;letter-spacing:0}
+      .top-actions{margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap}
+      .btn{
+        border:1px solid var(--line);background:var(--panel);color:var(--ink);
+        border-radius:12px;padding:9px 16px;font-size:14.5px;font-weight:700;
+        display:inline-flex;align-items:center;gap:7px;box-shadow:0 2px 8px rgba(30,25,10,.08);
+      }
+      .btn:active{transform:translateY(1px)}
+      .btn.gold{background:linear-gradient(180deg,#eec26a,#cf9420);border-color:#a8740d;color:#2a1d02}
+      .btn.dark{background:var(--btn-dark);color:var(--bg-soft);border-color:transparent}
+      @media (prefers-color-scheme: dark){ .btn.dark{color:#1d2416} }
+      .btn svg{width:17px;height:17px;flex:none}
+
+      /* ---------- score bar ---------- */
+      .scorebar{
+        display:flex;align-items:stretch;gap:8px;margin-bottom:12px;flex-wrap:wrap;
+      }
+      .team-chip{
+        flex:1 1 150px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+        padding:8px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(30,25,10,.06);
+      }
+      .team-chip .names{font-weight:800;font-size:14.5px;line-height:1.25}
+      .team-chip .names span{display:block;font-weight:500;font-size:11.5px;color:var(--ink-soft)}
+      .team-chip .pts{margin-inline-start:auto;text-align:center}
+      .team-chip .pts b{font-size:24px;font-weight:900;line-height:1;display:block}
+      .team-chip .pts span{font-size:11px;color:var(--ink-soft);font-weight:600}
+      .team-chip.us{border-color:var(--gold-bright);box-shadow:0 0 0 1px var(--gold-bright),0 2px 8px rgba(30,25,10,.06)}
+      .trump-chip{
+        flex:0 1 auto;min-width:118px;background:linear-gradient(180deg,#14563a,#0b4d31);color:#f5edd6;
+        border-radius:14px;padding:8px 14px;display:flex;align-items:center;gap:10px;border:1px solid #083a25;
+      }
+      .trump-chip .lbl{font-size:11.5px;font-weight:600;opacity:.85;line-height:1.3}
+      .trump-chip .sym{font-size:30px;line-height:1;font-weight:900}
+      .trump-chip .sym.red{color:#ff8f98}
+      .tricks-line{flex-basis:100%;text-align:center;font-size:13px;color:var(--ink-soft);font-weight:600}
+      .tricks-line b{color:var(--ink);font-size:15px}
+
+      /* ---------- table ---------- */
+      .table{
+        position:relative;border-radius:34px;padding:14px;
+        background:
+          radial-gradient(ellipse 90% 80% at 50% 42%, var(--felt-1) 0%, var(--felt-2) 62%, var(--felt-edge) 100%);
+        border:10px solid var(--wood);
+        box-shadow:inset 0 0 0 3px rgba(0,0,0,.25), inset 0 0 60px rgba(0,0,0,.35), var(--shadow);
+        height:min(58dvh,520px);min-height:380px;
+        overflow:hidden;
+      }
+      .table::before{
+        content:"";position:absolute;inset:14px;border-radius:24px;
+        border:2px solid rgba(245,237,214,.16);pointer-events:none;
+      }
+      .seat{position:absolute;display:flex;flex-direction:column;align-items:center;gap:5px;z-index:3;width:118px}
+      .seat-top{top:12px;left:50%;transform:translateX(-50%)}
+      .seat-bottom{bottom:12px;left:50%;transform:translateX(-50%)}
+      .seat-left{left:8px;top:50%;transform:translateY(-50%)}
+      .seat-right{right:8px;top:50%;transform:translateY(-50%)}
+      .avatar{
+        width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+        font-size:22px;font-weight:900;color:#fff;border:2px solid rgba(255,255,255,.55);
+        box-shadow:0 4px 12px rgba(0,0,0,.35);position:relative;flex:none;
+      }
+      .av-0{background:linear-gradient(160deg,#2e7d5b,#17573c)}
+      .av-1{background:linear-gradient(160deg,#8a4b3a,#63322a)}
+      .av-2{background:linear-gradient(160deg,#c99a2e,#96700f)}
+      .av-3{background:linear-gradient(160deg,#4d5f7a,#33445c)}
+      .seat.active .avatar{box-shadow:0 0 0 3px var(--gold-bright),0 0 22px rgba(238,194,106,.75)}
+      .pname{color:#f5edd6;font-size:13.5px;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.5);display:flex;align-items:center;gap:6px;line-height:1.2;text-align:center}
+      .hakem-badge{
+        background:var(--gold-bright);color:#2a1d02;font-size:10.5px;font-weight:900;
+        border-radius:999px;padding:2px 8px;box-shadow:0 2px 6px rgba(0,0,0,.3);white-space:nowrap;
+      }
+      .pro-badge{
+        background:rgba(245,237,214,.92);color:#6d4d05;font-size:10.5px;font-weight:800;
+        border-radius:999px;padding:2px 8px;white-space:nowrap;
+      }
+      .backs{display:flex;align-items:center;gap:6px;min-height:26px}
+      .backs .stack{position:relative;width:30px;height:24px}
+      .backs .mini{
+        position:absolute;top:0;width:17px;height:24px;border-radius:3px;
+        background:repeating-linear-gradient(45deg,#7e1f28 0 3px,#93262f 3px 6px);
+        border:1.5px solid #f0e6cc;box-shadow:0 1px 3px rgba(0,0,0,.35);
+      }
+      .backs .cnt{color:#f5edd6;font-size:12px;font-weight:800;background:rgba(0,0,0,.35);border-radius:999px;padding:1px 8px}
+      .seat .won-pips{display:flex;gap:3px;min-height:8px}
+      .seat .won-pips i{width:8px;height:8px;border-radius:50%;background:rgba(245,237,214,.25)}
+      .seat .won-pips i.on{background:var(--gold-bright);box-shadow:0 0 6px rgba(238,194,106,.8)}
+
+      /* trick area */
+      .trick-center{position:absolute;left:50%;top:50%;width:0;height:0;z-index:2}
+      .slot{position:absolute;width:64px;height:90px;margin:-45px 0 0 -32px;display:grid;place-items:center}
+      .slot-0{transform:translateY(64px)}
+      .slot-2{transform:translateY(-64px)}
+      .slot-1{transform:translateX(-72px)}
+      .slot-3{transform:translateX(72px)}
+      .slot .card{animation:playIn .28s ease-out}
+      .slot.win .card{box-shadow:0 0 0 3px var(--gold-bright),0 0 26px rgba(238,194,106,.85);transform:scale(1.07)}
+      @keyframes playIn{from{opacity:0;transform:translateY(10px) scale(.85)}to{opacity:1;transform:none}}
+      .table-msg{
+        position:absolute;left:50%;top:14px;transform:translateX(-50%) translateY(-6px);z-index:5;
+        background:rgba(10,32,22,.88);color:#f5edd6;font-size:13.5px;font-weight:700;
+        padding:8px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;
+        max-width:88%;text-align:center;border:1px solid rgba(238,194,106,.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      }
+      .table-msg.show{opacity:1;transform:translateX(-50%) translateY(0)}
+      .center-note{
+        position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;
+        color:rgba(245,237,214,.4);font-size:13px;font-weight:700;text-align:center;pointer-events:none;line-height:1.7;
+      }
+
+      /* ---------- cards ---------- */
+      .card{
+        width:64px;height:90px;border-radius:9px;background:linear-gradient(165deg,#fffef9,#f6f0dd);
+        border:1px solid var(--card-edge);box-shadow:0 4px 10px rgba(0,0,0,.3);
+        position:relative;color:#26221a;user-select:none;flex:none;
+      }
+      .card.red{color:var(--red)}
+      .card .corner{position:absolute;top:3px;left:5px;text-align:center;line-height:1.02;font-weight:800}
+      .card .corner .r{font-size:15px;display:block}
+      .card .corner .s{font-size:12px;display:block}
+      .card .corner.br{top:auto;left:auto;bottom:3px;right:5px;transform:rotate(180deg)}
+      .card .big{position:absolute;inset:0;display:grid;place-items:center;font-size:34px}
+
+      /* ---------- your hand ---------- */
+      .hand-zone{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:12px 12px 14px;box-shadow:0 2px 10px rgba(30,25,10,.06)}
+      .hand-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+      .hand-head .who{font-weight:900;font-size:15.5px}
+      .hand-head .turn-note{font-size:13px;color:var(--ink-soft);font-weight:600}
+      .hand-head .turn-note b{color:var(--gold)}
+      .hand-head .spacer{margin-inline-start:auto;display:flex;gap:8px}
+      .btn.small{min-height:40px;padding:7px 13px;font-size:13.5px;border-radius:10px}
+      .hand{display:flex;justify-content:center;direction:ltr;min-height:104px;padding-top:12px}
+      .hand .card{width:clamp(46px,11.5vw,66px);height:auto;aspect-ratio:5/7;margin-inline-start:clamp(-24px,-4.5vw,-12px);transition:transform .15s,box-shadow .15s,opacity .15s}
+      .hand .card:first-child{margin-inline-start:0}
+      .hand .card .corner .r{font-size:clamp(12px,3vw,15px)}
+      .hand .card .big{font-size:clamp(22px,5.5vw,34px)}
+      .hand .card.playable{cursor:pointer;box-shadow:0 0 0 2px var(--gold-bright),0 6px 14px rgba(0,0,0,.25);transform:translateY(-8px)}
+      .hand .card.playable:hover{transform:translateY(-16px)}
+      .hand .card.locked{opacity:.5;filter:saturate(.55)}
+      .hand .card.suggested{box-shadow:0 0 0 3px var(--gold-bright),0 0 24px rgba(217,164,65,.9);transform:translateY(-18px);z-index:4}
+      .hand-empty{color:var(--ink-soft);font-size:13.5px;font-weight:600;align-self:center;direction:rtl}
+
+      /* ---------- modals ---------- */
+      .overlay{
+        position:fixed;inset:0;background:rgba(12,18,12,.62);backdrop-filter:blur(3px);
+        display:none;place-items:center;z-index:50;padding:16px;
+      }
+      .overlay.open{display:grid}
+      .panel{
+        background:var(--panel);color:var(--ink);border-radius:20px;max-width:460px;width:100%;
+        padding:22px;box-shadow:var(--shadow);border:1px solid var(--line);max-height:88dvh;overflow:auto;
+      }
+      .panel h2{margin:0 0 6px;font-size:21px;font-weight:900}
+      .panel p{margin:6px 0;color:var(--ink-soft);font-size:14px;line-height:1.9}
+      .panel .row-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+      .suit-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+      .suit-btn{
+        border:2px solid var(--line);background:var(--bg-soft);border-radius:14px;padding:12px 10px;
+        display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink);min-height:86px;justify-content:center;
+      }
+      .suit-btn .sym{font-size:32px;line-height:1.1}
+      .suit-btn.red{color:var(--red)}
+      .suit-btn .nm{font-weight:900;font-size:15px;color:var(--ink)}
+      .suit-btn.red .nm{color:var(--ink)}
+      .suit-btn .dt{font-size:12px;color:var(--ink-soft);font-weight:600}
+      .suit-btn.rec{border-color:var(--gold-bright);box-shadow:0 0 0 1px var(--gold-bright);position:relative}
+      .suit-btn .rec-tag{position:absolute;top:-10px;background:var(--gold-bright);color:#2a1d02;font-size:10.5px;font-weight:900;border-radius:999px;padding:2px 9px}
+      .mini-hand{display:flex;gap:5px;justify-content:center;direction:ltr;margin:12px 0 2px;flex-wrap:wrap}
+      .mini-hand .card{width:44px;height:62px}
+      .mini-hand .card .big{font-size:22px}
+      .mini-hand .card .corner .r{font-size:12px}
+      .mini-hand .card .corner .s{font-size:10px}
+      .result-big{font-size:26px;font-weight:900;text-align:center;margin:8px 0 2px}
+      .result-sub{text-align:center}
+      .kot-tag{display:inline-block;background:#7e1f28;color:#ffe9c9;font-weight:900;font-size:12.5px;border-radius:999px;padding:3px 12px}
+      .rules-list{margin:8px 0;padding-inline-start:20px;color:var(--ink-soft);font-size:14px;line-height:2}
+      .rules-list b{color:var(--ink)}
+      .install-box{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:12px}
+      .install-box p{margin:4px 0;font-size:13.5px}
+
+      @media (max-width:560px){
+        .title{font-size:25px}
+        .table{height:52dvh;min-height:350px;border-width:7px;border-radius:26px}
+        .seat{width:92px}
+        .avatar{width:44px;height:44px;font-size:18px}
+        .slot{width:54px;height:76px;margin:-38px 0 0 -27px}
+        .slot .card{width:54px;height:76px}
+        .slot .card .big{font-size:27px}
+        .slot-0{transform:translateY(56px)}
+        .slot-2{transform:translateY(-56px)}
+        .slot-1{transform:translateX(-58px)}
+        .slot-3{transform:translateX(58px)}
+        .trump-chip{min-width:100px}
+      }
+      @media (prefers-reduced-motion: reduce){
+        .slot .card{animation:none}
+        .hand .card{transition:none}
+        .table-msg{transition:none}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <h1 class="title">حکم<small>شما و سارا، در برابر آرش و مریم</small></h1>
+        <div class="top-actions">
+          <button class="btn gold" id="btnDownload" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m6.5 10.5 5.5 5.5 5.5-5.5"/><path d="M4 20h16"/></svg>
+            دانلود اپ
+          </button>
+          <button class="btn" id="btnHelp" type="button">راهنما و نصب</button>
+          <button class="btn dark" id="btnNew" type="button">بازی جدید</button>
+        </div>
+      </header>
+
+      <section class="scorebar" aria-label="امتیازها">
+        <div class="team-chip us">
+          <div class="names">شما و سارا<span>تیم شما</span></div>
+          <div class="pts"><b id="ptsUs">۰</b><span>امتیاز ست</span></div>
+        </div>
+        <div class="trump-chip">
+          <div class="sym" id="trumpSym">؟</div>
+          <div class="lbl">حکم<br /><b id="trumpName">—</b></div>
+        </div>
+        <div class="team-chip">
+          <div class="names">آرش و مریم<span>تیم حریف</span></div>
+          <div class="pts"><b id="ptsThem">۰</b><span>امتیاز ست</span></div>
+        </div>
+        <div class="tricks-line" id="tricksLine">دست‌های این ست: شما <b>۰</b> — حریف <b>۰</b> · اولین تیمی که به ۷ دست برسد، ست را می‌برد</div>
+      </section>
+
+      <section class="table" id="table" aria-label="میز بازی">
+        <div class="center-note" id="centerNote">حکم<br />میز بازی</div>
+        <div class="table-msg" id="toast"></div>
+
+        <div class="seat seat-top" id="seat2">
+          <div class="avatar av-2">س</div>
+          <div class="pname">سارا <span class="pro-badge">یار حرفه‌ای</span><span class="hakem-badge" data-hakem="2" hidden>حاکم</span></div>
+          <div class="backs" data-backs="2"></div>
+          <div class="won-pips" data-pips="team0"></div>
+        </div>
+        <div class="seat seat-left" id="seat1">
+          <div class="avatar av-1">آ</div>
+          <div class="pname">آرش <span class="hakem-badge" data-hakem="1" hidden>حاکم</span></div>
+          <div class="backs" data-backs="1"></div>
+          <div class="won-pips" data-pips="team1"></div>
+        </div>
+        <div class="seat seat-right" id="seat3">
+          <div class="avatar av-3">م</div>
+          <div class="pname">مریم <span class="hakem-badge" data-hakem="3" hidden>حاکم</span></div>
+          <div class="backs" data-backs="3"></div>
+          <div class="won-pips" data-pips="team1b"></div>
+        </div>
+        <div class="seat seat-bottom" id="seat0">
+          <div class="avatar av-0">ش</div>
+          <div class="pname">شما <span class="hakem-badge" data-hakem="0" hidden>حاکم</span></div>
+          <div class="won-pips" data-pips="team0b"></div>
+        </div>
+
+        <div class="trick-center">
+          <div class="slot slot-0" data-slot="0"></div>
+          <div class="slot slot-1" data-slot="1"></div>
+          <div class="slot slot-2" data-slot="2"></div>
+          <div class="slot slot-3" data-slot="3"></div>
+        </div>
+      </section>
+
+      <section class="hand-zone">
+        <div class="hand-head">
+          <span class="who">کارت‌های شما</span>
+          <span class="turn-note" id="turnNote">در حال آماده‌سازی…</span>
+          <span class="spacer">
+            <button class="btn small" id="btnHint" type="button">پیشنهاد سارا</button>
+          </span>
+        </div>
+        <div class="hand" id="hand"></div>
+      </section>
+    </div>
+
+    <!-- Trump selection -->
+    <div class="overlay" id="trumpOverlay">
+      <div class="panel">
+        <h2>شما حاکم هستید — حکم را انتخاب کنید</h2>
+        <p>این پنج کارت اول شماست. خالی را انتخاب کنید که دستتان در آن قوی‌تر است؛ سارا هم پیشنهادش را مشخص کرده.</p>
+        <div class="mini-hand" id="trumpMiniHand"></div>
+        <div class="suit-grid" id="suitGrid"></div>
+      </div>
+    </div>
+
+    <!-- Hand / match result -->
+    <div class="overlay" id="resultOverlay">
+      <div class="panel">
+        <h2 id="resultTitle">پایان ست</h2>
+        <div class="result-big" id="resultBig"></div>
+        <p class="result-sub" id="resultSub"></p>
+        <p class="result-sub" id="resultScore"></p>
+        <div class="row-btns" style="justify-content:center">
+          <button class="btn gold" id="btnNext" type="button">دست بعد</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help -->
+    <div class="overlay" id="helpOverlay">
+      <div class="panel">
+        <h2>راهنمای بازی حکم</h2>
+        <ul class="rules-list">
+          <li>چهار بازیکن، دو تیم: <b>شما و سارا</b> در برابر <b>آرش و مریم</b>.</li>
+          <li>حاکم بعد از دیدن پنج کارت اول، <b>حکم</b> را انتخاب می‌کند و بازی را شروع می‌کند. حاکم هر ست عوض می‌شود.</li>
+          <li>هر دست باید تا می‌توانید <b>همان خالِ</b> کارت اول را بازی کنید؛ اگر ندارید، می‌توانید حکم بزنید یا کارت بیندازید.</li>
+          <li>بالاترین حکم، یا در نبود حکم بالاترین کارتِ خالِ اول، دست را می‌برد و دست بعد را شروع می‌کند.</li>
+          <li>تیمی که زودتر به <b>۷ دست</b> برسد ست را می‌برد و ۱ امتیاز می‌گیرد. برد ۷ بر صفر «<b>کُت</b>» است و ۲ امتیاز دارد؛ اگر تیم حاکم کت شود، حریف ۳ امتیاز می‌گیرد. اولین تیمی که به <b>۷ امتیاز</b> برسد، بازی را می‌برد.</li>
+          <li><b>سارا، یار شما، حرفه‌ای بازی می‌کند:</b> کارت‌های بازی‌شده را می‌شمارد، می‌داند کدام کارت‌ها هنوز «سر» هستند، دستِ برده‌ی شما را نمی‌گیرد، حکم را بی‌جا هدر نمی‌دهد و وقتی لازم باشد دست شما را با کارت سر محکم می‌کند. دکمه‌ی «پیشنهاد سارا» هم بهترین کارت از نظر او را به شما نشان می‌دهد.</li>
+        </ul>
+        <div class="install-box">
+          <p><b>نصب روی گوشی:</b></p>
+          <p>دکمه‌ی «دانلود اپ» بالای صفحه، کل بازی را به‌صورت یک فایل ذخیره می‌کند؛ همان فایل را روی گوشی یا کامپیوتر باز کنید و بازی کنید.</p>
+          <p>اندروید (کروم): منوی ⋮ و بعد «افزودن به صفحه اصلی». آیفون (سافاری): دکمه‌ی اشتراک‌گذاری و بعد «Add to Home Screen» تا حکم مثل یک اپ روی صفحه‌ی گوشی بنشیند.</p>
+        </div>
+        <div class="row-btns">
+          <button class="btn dark" id="btnCloseHelp" type="button">بستن</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    "use strict";
+    /* ================= Hokm engine ================= */
+    var SUITS = [
+      { id:"S", sym:"♠", name:"پیک",   red:false },
+      { id:"H", sym:"♥", name:"دل",    red:true  },
+      { id:"D", sym:"♦", name:"خشت",   red:true  },
+      { id:"C", sym:"♣", name:"گشنیز", red:false }
+    ];
+    var SUIT_BY_ID = {}; SUITS.forEach(function(s){ SUIT_BY_ID[s.id]=s; });
+    var NAMES = ["شما","آرش","سارا","مریم"];
+    var FA = "۰۱۲۳۴۵۶۷۸۹";
+    function fa(n){ return String(n).replace(/[0-9]/g, function(d){ return FA[+d]; }); }
+    function rankLabel(r){ return r===14?"A":r===13?"K":r===12?"Q":r===11?"J":String(r); }
+    function rankNameFa(r){ return r===14?"آس":r===13?"شاه":r===12?"بی‌بی":r===11?"سرباز":fa(r); }
+    function teamOf(p){ return p%2; }
+    function partnerOf(p){ return (p+2)%4; }
+
+    var G = null;
+    function newState(){
+      return {
+        id: 0, phase:"idle", hands:[[],[],[],[]], trump:null, hakem:0,
+        leader:0, turn:0, trick:[], tricksWon:[0,0], tricksPlayed:0,
+        points:[0,0], played:{}, voids:[{},{}, {},{}], trumpDrawn:{},
+        busy:false, suggested:null, handNo:0
+      };
+    }
+
+    function buildDeck(){
+      var d=[];
+      SUITS.forEach(function(s){ for(var r=2;r<=14;r++) d.push({suit:s.id, rank:r, id:s.id+r}); });
+      for(var i=d.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=d[i]; d[i]=d[j]; d[j]=t; }
+      return d;
+    }
+
+    /* ---------- knowledge helpers (card counting) ---------- */
+    function isSeen(card, p){ return !!G.played[card.id] || G.hands[p].some(function(c){ return c.id===card.id; }); }
+    function isBoss(card, p){
+      for(var r=card.rank+1;r<=14;r++){ if(!isSeen({suit:card.suit, rank:r, id:card.suit+r}, p)) return false; }
+      return true;
+    }
+    function suitCards(hand, suit){ return hand.filter(function(c){ return c.suit===suit; }); }
+    function sortAsc(a){ return a.slice().sort(function(x,y){ return x.rank-y.rank; }); }
+    function sortDesc(a){ return a.slice().sort(function(x,y){ return y.rank-x.rank; }); }
+    function trickWinnerEntry(){
+      var led = G.trick[0].card.suit, best = G.trick[0];
+      for(var i=1;i<G.trick.length;i++){
+        var e = G.trick[i], c = e.card, b = best.card;
+        if(c.suit===b.suit){ if(c.rank>b.rank) best=e; }
+        else if(c.suit===G.trump) best=e;
+      }
+      return best;
+    }
+    function playableCards(p){
+      var hand = G.hands[p];
+      if(!G.trick.length) return hand.slice();
+      var led = G.trick[0].card.suit;
+      var f = suitCards(hand, led);
+      return f.length ? f : hand.slice();
+    }
+
+    /* ---------- trump choice (expert scoring) ---------- */
+    function trumpScore(hand, suit){
+      var cs = suitCards(hand, suit), score = cs.length*3;
+      cs.forEach(function(c){ score += Math.max(0, c.rank-9); });
+      var hasA = cs.some(function(c){return c.rank===14;}), hasK = cs.some(function(c){return c.rank===13;});
+      if(hasA && hasK) score += 3;
+      if(cs.length>=5) score += 2;
+      return score;
+    }
+    function bestTrump(hand){
+      var best=SUITS[0], bs=-1;
+      SUITS.forEach(function(s){ var sc=trumpScore(hand,s.id); if(sc>bs){ bs=sc; best=s; } });
+      return best;
+    }
+
+    /* ================= EXPERT AI — Sara (your partner) =================
+       Counts every played card, knows which cards are still "boss",
+       never overtakes a trick her partner is winning, secures a
+       vulnerable partner trick with the boss card, saves high trumps,
+       and discards to create voids. */
+    function expertDiscard(p){
+      var hand = G.hands[p];
+      var nonTrump = hand.filter(function(c){ return c.suit!==G.trump; });
+      var pool = nonTrump.length ? nonTrump : hand.slice();
+      var best=null, bestScore=1e9;
+      pool.forEach(function(c){
+        var score = c.rank + suitCards(hand, c.suit).length*1.5;
+        if(isBoss(c,p)) score += 100;                 /* never throw away a boss */
+        if(c.rank===13 && !isSeen({suit:c.suit,rank:14,id:c.suit+14},p)) score += 40; /* keep a guarded king */
+        if(score<bestScore){ bestScore=score; best=c; }
+      });
+      return best;
+    }
+    function expertLead(p){
+      var hand = G.hands[p];
+      /* 1) Cash boss cards in side suits — longest suit first */
+      var bosses = hand.filter(function(c){ return c.suit!==G.trump && isBoss(c,p); });
+      if(bosses.length){
+        bosses.sort(function(a,b){ return suitCards(hand,b.suit).length - suitCards(hand,a.suit).length || b.rank-a.rank; });
+        return bosses[0];
+      }
+      /* 2) Strong trump hand: draw the opponents' trumps out once, early */
+      var trumps = suitCards(hand, G.trump);
+      if(trumps.length>=4 && trumps.some(function(c){return c.rank>=13;}) && G.tricksPlayed<4 && !G.trumpDrawn[p]){
+        G.trumpDrawn[p]=true;
+        return sortDesc(trumps)[0];
+      }
+      /* 3) Low card from the longest side suit — partner may hold the ace */
+      var side = SUITS.filter(function(s){ return s.id!==G.trump; })
+        .map(function(s){ return {suit:s.id, cs:suitCards(hand,s.id)}; })
+        .filter(function(x){ return x.cs.length; })
+        .sort(function(a,b){ return b.cs.length-a.cs.length; });
+      if(side.length) return sortAsc(side[0].cs)[0];
+      /* 4) Only trumps left */
+      return sortAsc(trumps)[0];
+    }
+    function expertPlay(p){
+      var hand = G.hands[p], trick = G.trick;
+      if(!trick.length) return expertLead(p);
+      var led = trick[0].card.suit;
+      var follow = sortAsc(suitCards(hand, led));
+      var winE = trickWinnerEntry();
+      var partner = partnerOf(p);
+      var partnerWinning = winE.player===partner;
+      var playersAfter = 3 - trick.length;
+      var partnerPlayed = trick.some(function(t){ return t.player===partner; });
+
+      if(follow.length){
+        if(partnerWinning){
+          /* Secure a vulnerable partner trick: if an opponent still to
+             play could beat it and I hold the boss of the led suit, take
+             it over with the boss — otherwise duck with my lowest card
+             and never steal partner's trick. */
+          if(playersAfter>0 && winE.card.suit===led && !isBoss(winE.card,p)){
+            var boss = follow.find(function(c){ return c.rank>winE.card.rank && isBoss(c,p); });
+            if(boss) return boss;
+          }
+          return follow[0];
+        }
+        /* An opponent is winning */
+        if(winE.card.suit!==led) return follow[0];        /* they trumped in — suit cards can't win */
+        var beating = follow.filter(function(c){ return c.rank>winE.card.rank; });
+        if(!beating.length) return follow[0];
+        var lowBeat = beating[0];
+        if(playersAfter===0) return lowBeat;              /* last to play: win it cheap */
+        if(!partnerPlayed){
+          if(isBoss(lowBeat,p) && winE.card.rank>=12) return lowBeat;  /* capture their K/Q with the ace */
+          if(lowBeat.rank<=10) return lowBeat;            /* cheap win is fine */
+          return follow[0];                               /* save the high card, let partner try */
+        }
+        return lowBeat;                                   /* partner already lost it — win cheap */
+      }
+      /* Void in the led suit */
+      if(partnerWinning) return expertDiscard(p);         /* never trump partner's trick */
+      var trumps = sortAsc(suitCards(hand, G.trump));
+      var needed = null;
+      if(winE.card.suit===G.trump) needed = trumps.find(function(c){ return c.rank>winE.card.rank; }) || null;
+      else needed = trumps[0] || null;
+      if(needed){
+        var honorOut = trick.some(function(t){ return t.card.rank>=12; });
+        if(playersAfter===0) return needed;
+        if(partnerPlayed && (needed.rank<=11 || honorOut)) return needed;
+        if(!partnerPlayed && needed.rank<=9) return needed;
+      }
+      return expertDiscard(p);
+    }
+
+    /* ---------- standard AI — the opponents ---------- */
+    function basicPlay(p){
+      var hand = G.hands[p], trick = G.trick;
+      if(!trick.length){
+        var best=null, bl=-1;
+        SUITS.forEach(function(s){ var cs=suitCards(hand,s.id); if(cs.length>bl){ bl=cs.length; best=cs; } });
+        return sortAsc(best)[0];
+      }
+      var led = trick[0].card.suit;
+      var follow = sortAsc(suitCards(hand, led));
+      var winE = trickWinnerEntry();
+      var partnerWinning = winE.player===partnerOf(p);
+      if(follow.length){
+        if(partnerWinning) return follow[0];
+        if(winE.card.suit!==led) return follow[0];
+        var beating = follow.filter(function(c){ return c.rank>winE.card.rank; });
+        if(beating.length && (trick.length===3 || beating[0].rank<=12)) return beating[0];
+        return follow[0];
+      }
+      if(partnerWinning){
+        var nt = sortAsc(hand.filter(function(c){ return c.suit!==G.trump; }));
+        return nt.length? nt[0] : sortAsc(hand)[0];
+      }
+      var trumps = sortAsc(suitCards(hand, G.trump));
+      if(trumps.length && Math.random()<0.65){
+        if(winE.card.suit===G.trump){ var n=trumps.find(function(c){return c.rank>winE.card.rank;}); if(n) return n; }
+        else return trumps[0];
+      }
+      var nt2 = sortAsc(hand.filter(function(c){ return c.suit!==G.trump; }));
+      return nt2.length? nt2[0] : sortAsc(hand)[0];
+    }
+    function aiPlay(p){ return p===2 ? expertPlay(p) : basicPlay(p); }
+    /* Sara also advises you with the same expert brain */
+    function hintForUser(){ return expertPlay(0); }
+
+    /* ================= rendering ================= */
+    var $ = function(sel){ return document.querySelector(sel); };
+    function cardEl(card, small){
+      var s = SUIT_BY_ID[card.suit];
+      var el = document.createElement("div");
+      el.className = "card" + (s.red ? " red" : "");
+      el.dataset.id = card.id;
+      el.innerHTML =
+        '<div class="corner"><span class="r">'+rankLabel(card.rank)+'</span><span class="s">'+s.sym+'</span></div>' +
+        '<div class="big">'+s.sym+'</div>' +
+        '<div class="corner br"><span class="r">'+rankLabel(card.rank)+'</span><span class="s">'+s.sym+'</span></div>';
+      return el;
+    }
+    function sortHand(hand){
+      var order = {}; SUITS.forEach(function(s,i){ order[s.id]=i; });
+      if(G && G.trump) order[G.trump]=-1;
+      return hand.slice().sort(function(a,b){ return order[a.suit]-order[b.suit] || b.rank-a.rank; });
+    }
+    function renderAll(){ renderHand(); renderSeats(); renderTrick(); renderScore(); }
+    function renderHand(){
+      var box = $("#hand"); box.innerHTML="";
+      if(!G || G.phase==="idle"){ box.innerHTML='<div class="hand-empty">برای شروع، «بازی جدید» را بزنید.</div>'; return; }
+      var mine = sortHand(G.hands[0]);
+      var myTurn = G.phase==="play" && G.turn===0 && !G.busy;
+      var playable = myTurn ? playableCards(0) : [];
+      var playIds = {}; playable.forEach(function(c){ playIds[c.id]=true; });
+      mine.forEach(function(c){
+        var el = cardEl(c);
+        el.setAttribute("role","button");
+        el.setAttribute("aria-label", rankNameFa(c.rank)+" "+SUIT_BY_ID[c.suit].name);
+        if(myTurn){ el.classList.add(playIds[c.id] ? "playable" : "locked"); if(playIds[c.id]) el.setAttribute("tabindex","0"); }
+        if(G.suggested===c.id) el.classList.add("suggested");
+        el.addEventListener("click", function(){
+          if(!myTurn || !playIds[c.id]) return;
+          G.suggested=null;
+          humanPlay(c);
+        });
+        el.addEventListener("keydown", function(ev){
+          if((ev.key==="Enter" || ev.key===" ") && myTurn && playIds[c.id]){
+            ev.preventDefault();
+            G.suggested=null;
+            humanPlay(c);
+          }
+        });
+        box.appendChild(el);
+      });
+      var note = $("#turnNote");
+      if(G.phase==="trump" && G.hakem===0) note.innerHTML = "حکم را انتخاب کنید";
+      else if(G.phase==="play"){
+        note.innerHTML = G.turn===0 ? "<b>نوبت شماست</b> — یک کارت بازی کنید" : "نوبت " + NAMES[G.turn] + " است…";
+      } else if(G.phase==="trump") note.textContent = NAMES[G.hakem] + " در حال انتخاب حکم است…";
+      else note.textContent = "";
+    }
+    function renderSeats(){
+      for(var p=0;p<4;p++){
+        var seat = $("#seat"+p);
+        seat.classList.toggle("active", !!G && G.phase==="play" && G.turn===p);
+        var hk = document.querySelector('[data-hakem="'+p+'"]');
+        if(hk) hk.hidden = !(G && G.hakem===p && G.phase!=="idle");
+        var backs = document.querySelector('[data-backs="'+p+'"]');
+        if(backs){
+          backs.innerHTML="";
+          if(G && G.phase!=="idle"){
+            var stack = document.createElement("div"); stack.className="stack";
+            var n = Math.min(3, Math.max(1, Math.ceil(G.hands[p].length/5)));
+            for(var i=0;i<n;i++){ var m=document.createElement("div"); m.className="mini"; m.style.left=(i*6)+"px"; stack.appendChild(m); }
+            backs.appendChild(stack);
+            var cnt=document.createElement("span"); cnt.className="cnt"; cnt.textContent=fa(G.hands[p].length)+" کارت";
+            backs.appendChild(cnt);
+          }
+        }
+      }
+      document.querySelectorAll("[data-pips]").forEach(function(el){
+        var team = el.dataset.pips.indexOf("team0")===0 ? 0 : 1;
+        el.innerHTML="";
+        if(!G) return;
+        for(var i=0;i<7;i++){ var dot=document.createElement("i"); if(i<G.tricksWon[team]) dot.className="on"; el.appendChild(dot); }
+      });
+    }
+    function renderTrick(){
+      for(var p=0;p<4;p++){
+        var slot = document.querySelector('[data-slot="'+p+'"]');
+        slot.innerHTML=""; slot.classList.remove("win");
+      }
+      if(!G) return;
+      G.trick.forEach(function(e){
+        var slot = document.querySelector('[data-slot="'+e.player+'"]');
+        slot.appendChild(cardEl(e.card));
+      });
+    }
+    function renderScore(){
+      $("#ptsUs").textContent = fa(G?G.points[0]:0);
+      $("#ptsThem").textContent = fa(G?G.points[1]:0);
+      var t = G && G.trump ? SUIT_BY_ID[G.trump] : null;
+      $("#trumpSym").textContent = t ? t.sym : "؟";
+      $("#trumpSym").className = "sym" + (t && t.red ? " red" : "");
+      $("#trumpName").textContent = t ? t.name : "—";
+      $("#tricksLine").innerHTML = "دست‌های این ست: شما <b>"+fa(G?G.tricksWon[0]:0)+"</b> — حریف <b>"+fa(G?G.tricksWon[1]:0)+"</b> · اولین تیمی که به ۷ دست برسد، ست را می‌برد · ست "+fa(G?G.handNo:0);
+    }
+    var toastTimer=null;
+    function toast(msg, ms){
+      var el=$("#toast"); el.textContent=msg; el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer=setTimeout(function(){ el.classList.remove("show"); }, ms||2200);
+    }
+
+    /* ================= game flow ================= */
+    function later(fn, ms){ var id=G.id; setTimeout(function(){ if(G && G.id===id) fn(); }, ms); }
+
+    function newMatch(){
+      var keepId = G ? G.id+1 : 1;
+      G = newState(); G.id = keepId; G.hakem = 0; G.handNo = 0;
+      $("#resultOverlay").classList.remove("open");
+      $("#trumpOverlay").classList.remove("open");
+      startHand();
+    }
+    function startHand(){
+      G.handNo++;
+      G.hands=[[],[],[],[]]; G.trick=[]; G.tricksWon=[0,0]; G.tricksPlayed=0;
+      G.played={}; G.voids=[{},{}, {},{}]; G.trumpDrawn={}; G.trump=null; G.suggested=null;
+      G.phase="trump"; G.busy=true;
+      var deck = buildDeck();
+      for(var i=0;i<5;i++) for(var p=0;p<4;p++) G.hands[p].push(deck.pop());
+      G.deckRest = deck;
+      renderAll();
+      if(G.hakem===0){
+        openTrumpPicker();
+      } else {
+        toast(NAMES[G.hakem]+" حاکم است و حکم را انتخاب می‌کند…", 1600);
+        later(function(){
+          var s = bestTrump(G.hands[G.hakem]);
+          setTrump(s.id);
+        }, 1300);
+      }
+    }
+    function openTrumpPicker(){
+      var mini = $("#trumpMiniHand"); mini.innerHTML="";
+      sortHand(G.hands[0]).forEach(function(c){ mini.appendChild(cardEl(c,true)); });
+      var rec = bestTrump(G.hands[0]);
+      var grid = $("#suitGrid"); grid.innerHTML="";
+      SUITS.forEach(function(s){
+        var cs = suitCards(G.hands[0], s.id);
+        var tops = sortDesc(cs).slice(0,3).map(function(c){ return rankLabel(c.rank); }).join("، ");
+        var b = document.createElement("button");
+        b.type="button";
+        b.className = "suit-btn" + (s.red?" red":"") + (s.id===rec.id?" rec":"");
+        b.innerHTML =
+          (s.id===rec.id ? '<span class="rec-tag">پیشنهاد سارا</span>' : '') +
+          '<span class="sym">'+s.sym+'</span><span class="nm">'+s.name+'</span>' +
+          '<span class="dt">'+fa(cs.length)+' کارت'+(tops ? ' · '+tops : '')+'</span>';
+        b.addEventListener("click", function(){
+          $("#trumpOverlay").classList.remove("open");
+          setTrump(s.id);
+        });
+        grid.appendChild(b);
+      });
+      $("#trumpOverlay").classList.add("open");
+    }
+    function setTrump(suitId){
+      G.trump = suitId;
+      var deck = G.deckRest || [];
+      while(deck.length) for(var p=0;p<4;p++){ if(deck.length) G.hands[p].push(deck.pop()); }
+      G.deckRest=null;
+      G.phase="play"; G.busy=false;
+      G.leader = G.hakem; G.turn = G.hakem;
+      renderAll();
+      toast("حکم: "+SUIT_BY_ID[suitId].name+" "+SUIT_BY_ID[suitId].sym+" — "+NAMES[G.hakem]+" بازی را شروع می‌کند", 2400);
+      advance();
+    }
+    function advance(){
+      if(!G || G.phase!=="play") return;
+      renderAll();
+      if(G.turn===0) return;               /* wait for the human */
+      G.busy=true; renderHand();
+      var p = G.turn;
+      later(function(){
+        G.busy=false;
+        var card = aiPlay(p);
+        doPlay(p, card);
+      }, 620 + Math.random()*480);
+    }
+    function humanPlay(card){ doPlay(0, card); }
+    function doPlay(p, card){
+      var hand = G.hands[p];
+      var idx = hand.findIndex(function(c){ return c.id===card.id; });
+      if(idx<0) return;
+      hand.splice(idx,1);
+      if(G.trick.length && card.suit!==G.trick[0].card.suit) G.voids[p][G.trick[0].card.suit]=true;
+      G.played[card.id]=true;
+      G.trick.push({player:p, card:card});
+      if(G.trick.length===4){
+        renderAll();
+        G.busy=true;
+        later(resolveTrick, 1050);
+        return;
+      }
+      G.turn = (p+1)%4;
+      advance();
+    }
+    function resolveTrick(){
+      var winE = trickWinnerEntry();
+      var w = winE.player, team = teamOf(w);
+      G.tricksWon[team]++; G.tricksPlayed++;
+      var slot = document.querySelector('[data-slot="'+w+'"]');
+      if(slot) slot.classList.add("win");
+      renderSeats(); renderScore();
+      toast(NAMES[w]+" دست را برد", 1200);
+      later(function(){
+        G.trick=[]; G.busy=false;
+        if(G.tricksWon[0]>=7 || G.tricksWon[1]>=7 || G.hands[0].length===0){ endHand(); return; }
+        G.leader=w; G.turn=w;
+        advance();
+      }, 950);
+    }
+    function endHand(){
+      G.phase="over";
+      var winnerTeam = G.tricksWon[0]>G.tricksWon[1] ? 0 : 1;
+      var loserTricks = G.tricksWon[1-winnerTeam];
+      var hakemTeam = teamOf(G.hakem);
+      var pts = 1, kotText = "";
+      if(loserTricks===0){
+        if(winnerTeam===hakemTeam){ pts=2; kotText='<span class="kot-tag">کُت!</span> برد ۷ بر صفر — ۲ امتیاز'; }
+        else { pts=3; kotText='<span class="kot-tag">کُتِ حاکم!</span> تیم حاکم ۷ بر صفر باخت — ۳ امتیاز برای حریفِ حاکم'; }
+      }
+      G.points[winnerTeam]+=pts;
+      renderAll();
+      var matchOver = G.points[0]>=7 || G.points[1]>=7;
+      $("#resultTitle").textContent = matchOver ? "پایان بازی" : "پایان ست "+fa(G.handNo);
+      $("#resultBig").textContent = winnerTeam===0 ? "ست را شما و سارا بردید" : "ست را آرش و مریم بردند";
+      $("#resultSub").innerHTML =
+        "نتیجه‌ی ست: "+fa(G.tricksWon[0])+" — "+fa(G.tricksWon[1])+" به نفع "+(winnerTeam===0?"شما":"حریف")+
+        (kotText ? "<br />"+kotText : "<br />۱ امتیاز برای برنده‌ی ست");
+      if(matchOver){
+        $("#resultScore").innerHTML = "<b>"+(G.points[0]>=7 ? "شما و سارا برنده‌ی بازی شدید!" : "آرش و مریم برنده‌ی بازی شدند")+"</b><br />امتیاز نهایی: شما "+fa(G.points[0])+" — حریف "+fa(G.points[1]);
+        $("#btnNext").textContent = "بازی تازه";
+      } else {
+        $("#resultScore").textContent = "امتیاز کل: شما "+fa(G.points[0])+" — حریف "+fa(G.points[1])+" · حاکمِ ست بعد: "+NAMES[(G.hakem+1)%4];
+        $("#btnNext").textContent = "دست بعد";
+      }
+      $("#resultOverlay").dataset.matchOver = matchOver ? "1" : "";
+      later(function(){ $("#resultOverlay").classList.add("open"); }, 500);
+    }
+
+    /* ================= download the app ================= */
+    function downloadApp(){
+      try{
+        var clone = document.documentElement.cloneNode(true);
+        clone.querySelectorAll(".overlay.open").forEach(function(m){ m.classList.remove("open"); });
+        var h = clone.querySelector("#hand"); if(h) h.innerHTML="";
+        clone.querySelectorAll("[data-slot]").forEach(function(s){ s.innerHTML=""; });
+        var t = clone.querySelector("#toast"); if(t){ t.textContent=""; t.classList.remove("show"); }
+        var html = "<!doctype html>\n" + clone.outerHTML;
+        var blob = new Blob([html], {type:"text/html;charset=utf-8"});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url; a.download = "hokm.html";
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+        toast("فایل بازی دانلود شد — آن را روی گوشی یا کامپیوتر باز کنید و بازی کنید", 3200);
+      }catch(e){
+        toast("دانلود در این مرورگر ممکن نشد؛ از منوی مرورگر «افزودن به صفحه اصلی» را بزنید", 3200);
+      }
+    }
+
+    /* ================= wiring ================= */
+    $("#btnNew").addEventListener("click", newMatch);
+    $("#btnDownload").addEventListener("click", downloadApp);
+    $("#btnHelp").addEventListener("click", function(){ $("#helpOverlay").classList.add("open"); });
+    $("#btnCloseHelp").addEventListener("click", function(){ $("#helpOverlay").classList.remove("open"); });
+    $("#helpOverlay").addEventListener("click", function(ev){ if(ev.target===this) this.classList.remove("open"); });
+    $("#btnNext").addEventListener("click", function(){
+      $("#resultOverlay").classList.remove("open");
+      if($("#resultOverlay").dataset.matchOver){ newMatch(); return; }
+      G.hakem = (G.hakem+1)%4;
+      startHand();
+    });
+    $("#btnHint").addEventListener("click", function(){
+      if(!G || G.phase!=="play" || G.turn!==0 || G.busy){ toast("پیشنهاد سارا وقتی نوبت شماست فعال می‌شود", 1800); return; }
+      var card = hintForUser();
+      if(!card) return;
+      G.suggested = card.id;
+      renderHand();
+      var s = SUIT_BY_ID[card.suit];
+      toast("سارا پیشنهاد می‌کند: "+rankLabel(card.rank)+" "+s.name+" "+s.sym, 2400);
+    });
+
+    G = newState();
+    newMatch();
+    </script>
+  </body>
+</html>
